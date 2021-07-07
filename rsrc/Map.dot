@@ -1,9 +1,9 @@
 digraph {
 	label="Map"
-	A[shape=circle, label="A", size=0.1, fillcolor="black", style="filled", fontcolor="white"]
-	B[shape=circle, label="B", size=0.1, fillcolor="black", style="filled", fontcolor="white"]
-	C[shape=circle, label="C", size=0.1, fillcolor="black", style="filled", fontcolor="white"]
-	D[shape=circle, label="D", size=0.1, fillcolor="black", style="filled", fontcolor="white"]
+	A[shape="circle", label="A", size=0.1, fillcolor="black", style="filled", fontcolor="white"]
+	B[shape="circle", label="B", size=0.1, fillcolor="black", style="filled", fontcolor="white"]
+	C[shape="circle", label="C", size=0.1, fillcolor="black", style="filled", fontcolor="white"]
+	D[shape="circle", label="D", size=0.1, fillcolor="black", style="filled", fontcolor="white"]
 	A->B[label="1.0"]
 	A->C[label="1.5"]
 	A->D[label="1.0"]

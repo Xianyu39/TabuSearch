@@ -63,7 +63,9 @@ class Tabu_Search:
                     ex_collection.append((self.map.cities[i], self.map.cities[j]))
 
         neighbour_collection = list()
-        print(ex_collection)
+
+        # Watch
+        # print(ex_collection)
         for ex in ex_collection:
             possible_ans=list(ans)
             # Exchange 2 elements in ex to generate new answers.
@@ -73,9 +75,20 @@ class Tabu_Search:
             possible_ans[y]=ex[0]
 
             if possible_ans not in self.TabuList:
-                neighbour_collection.append(possible_ans)
+                neighbour_collection.append(tuple(possible_ans))
 
         return tuple(neighbour_collection)
+
+
+    def evaluate(self, ans:tuple)->float:
+        length = float(0)
+        for ix in range(len(ans)):
+            v1 = self.map.cities.index(ans[ix-1])
+            v2 = self.map.cities.index(ans[ix])
+            length+=self.map.edges()[v1,v2]
+
+        return length
+            
 
 
 # style template
@@ -111,6 +124,11 @@ def main():
 
     TS=Tabu_Search(map)
     TS.beginCity='A'
-    print(TS.neighbours(('A','B','C','D')))
+    print("Original answer:\n", ('A','B','C','D'), ": ", TS.evaluate(('A','B','C','D')))
+    print("Adjacent answer: ")
+    for ans in TS.neighbours(('A','B','C','D')):
+        print(ans, ": ", TS.evaluate(ans))
+
+    visualize_Map(map)
 
 main()
