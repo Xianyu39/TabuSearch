@@ -49,7 +49,7 @@ class Tabu_Search:
     """Tabu search class, includes visualization."""
     def __init__(self, map:Map) -> None:
         self.TabuList = list()
-        self.TabuLength = int()
+        self.TabuLength = 3
         self.map = map
         self.beginCity=self.map.cities[0]
 
@@ -74,7 +74,7 @@ class Tabu_Search:
             possible_ans[x]=ex[1]
             possible_ans[y]=ex[0]
 
-            if possible_ans not in self.TabuList:
+            if tuple(possible_ans) not in self.TabuList:
                 neighbour_collection.append(tuple(possible_ans))
 
         return tuple(neighbour_collection)
@@ -89,6 +89,44 @@ class Tabu_Search:
 
         return length
             
+    # Tabu length: 3
+    # stop: 70 steps
+    def Find_the_Way(self, ans:tuple)->tuple:
+
+        # Do 70 times
+        count = 0
+        while count<70:
+            Adjacent = self.neighbours(ans)
+            # Watch
+            # print(ans, ":",self.evaluate(ans))
+            # for item in Adjacent:
+            #     print(item,":", self.evaluate(item), end='; ')
+            # print()
+            
+            # if all the neighbours were tabu.
+            if len(Adjacent) > 0:
+                ans = Adjacent[0]
+
+            # Find the best answer in neighbours, next time it will begin at it.
+            for possible_ans in Adjacent:
+                if self.evaluate(ans) > self.evaluate(possible_ans):
+                    ans = possible_ans
+
+            # Add the best answer to tabu list
+            self.TabuList.append(ans)
+
+            # Pardon the best answer in the tabu list.
+            while len(self.TabuList) > self.TabuLength:
+                best = self.TabuList[0]
+                for a in self.TabuList:
+                    if self.evaluate(a) < self.evaluate(best):
+                        best = a
+
+                self.TabuList.remove(best)
+
+            count += 1
+
+        return ans
 
 
 # style template
@@ -119,15 +157,20 @@ def visualize_Map(map:Map):
 
 
 def main():
-    mt=np.array([[INFINITY, 1,1.5,1],[1,INFINITY,1,1,],[1.5,5,INFINITY,1],[1,1,1,INFINITY]])
-    map = Map(('A','B','C','D'),mt)
+    mt=np.array(
+    [[INFINITY, 10,1.5,1, INFINITY],
+    [1,INFINITY,1, 1,3],
+    [1.5, INFINITY,INFINITY,3,1],
+    [INFINITY, 1,1,INFINITY,INFINITY],
+    [10, 3, 1,INFINITY, INFINITY]])
+    map = Map(('A','B','C','D','E'),mt)
 
     TS=Tabu_Search(map)
     TS.beginCity='A'
-    print("Original answer:\n", ('A','B','C','D'), ": ", TS.evaluate(('A','B','C','D')))
-    print("Adjacent answer: ")
-    for ans in TS.neighbours(('A','B','C','D')):
-        print(ans, ": ", TS.evaluate(ans))
+    
+    original_ans=('A','B','D','C','E')
+    print("Original answer:", original_ans,":", TS.evaluate(original_ans))
+    print("Finally answer: ",TS.Find_the_Way(original_ans),":",TS.evaluate(TS.Find_the_Way(original_ans)))
 
     visualize_Map(map)
 
